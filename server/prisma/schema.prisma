@@ -1,0 +1,35 @@
+// This is your Prisma schema file
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Situation Model ───────────────────────────────────────────────────────────
+// Represents one "cell" / row ingested from the Excel sheet.
+// 6 core columns + JSON metadata for extensibility.
+model Situation {
+  id          Int      @id @default(autoincrement())
+
+  // ── Core 6 Excel columns ───────────────────────────────────────
+  title       String   @db.VarChar(500)           // Excel: "Situation"
+  description String   @db.Text                   // Excel: "Description"
+  category    String   @db.VarChar(100)            // Excel: "Category"
+  difficulty  String   @db.VarChar(50)             // Excel: "Difficulty"  (Easy | Medium | Hard)
+  source      String?  @db.VarChar(255)            // Excel: "Source"  (optional)
+  tags        String[]                             // Excel: "Tags"  (comma-separated → array)
+
+  // ── Flexible JSON store for any extra Excel columns ────────────
+  metadata    Json?    @default("{}")
+
+  // ── Timestamps ──────────────────────────────────────────────────
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt      @map("updated_at")
+
+  @@map("situations")
+}
