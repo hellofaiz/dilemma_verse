@@ -1,5 +1,7 @@
 # DilemmaVerse (MindAbs) — Moral Dilemmas Manager
 
+> **Secured with Google OAuth 2.0 · PostgreSQL · Prisma · React + Vite**
+
 A full-stack MERN application (using PostgreSQL & Prisma instead of MongoDB) designed to ingest, manage, and explore moral dilemmas.
 
 It features an elegant, responsive UI built with Vite + React, connected to a robust Express backend. The application supports seamless bulk imports directly from Excel (`.xlsx`/`.csv`) files.
