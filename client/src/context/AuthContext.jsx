@@ -7,12 +7,12 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
-const API = import.meta.env.VITE_API_BASE_URL?.replace('/situation', '') || 'http://localhost:5000';
-
+const API = import.meta.env.VITE_API_BASE_URL?.replace('/situation', '');
+console.log("API====", API)
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser]       = useState(null);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); // true while checking session
 
   // ── Rehydrate session on first load ───────────────────────────
@@ -42,7 +42,7 @@ export function AuthProvider({ children }) {
   const logout = useCallback(async () => {
     try {
       await fetch(`${API}/auth/logout`, {
-        method:      'POST',
+        method: 'POST',
         credentials: 'include',
       });
     } finally {
