@@ -9,6 +9,7 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute   from './components/auth/ProtectedRoute';
 import LoginPage        from './pages/LoginPage';
 import HomePage         from './pages/HomePage';
+import AuthCallbackPage from './pages/AuthCallbackPage';
 
 export default function App() {
   return (
@@ -17,6 +18,9 @@ export default function App() {
         <Routes>
           {/* Public route */}
           <Route path="/login" element={<LoginPage />} />
+
+          {/* OAuth callback — exchanges URL token for httpOnly cookie */}
+          <Route path="/auth/callback" element={<AuthCallbackPage />} />
 
           {/* Protected route — redirects to /login if not authenticated */}
           <Route

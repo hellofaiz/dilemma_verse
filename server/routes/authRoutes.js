@@ -20,7 +20,7 @@ const authenticate   = require('../middleware/authenticate');
 router.get('/google',
   passport.authenticate('google', {
     scope: ['profile', 'email'],
-    session: false,       // We use JWT, not sessions
+    session: false,
   })
 );
 
@@ -32,6 +32,10 @@ router.get('/google/callback',
   }),
   authController.googleCallback
 );
+
+// ── Exchange URL token for httpOnly cookie ─────────────────────
+// Called by the frontend /auth/callback page after OAuth redirect
+router.post('/set-cookie', authController.setTokenCookie);
 
 // ── Protected: get current user profile ───────────────────────
 router.get('/me', authenticate, authController.getMe);
