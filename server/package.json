@@ -7,7 +7,7 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "start": "npx prisma generate && node index.js",
+    "start": "node ./node_modules/prisma/build/index.js generate && node index.js",
     "dev": "nodemon index.js"
   },
   "dependencies": {
