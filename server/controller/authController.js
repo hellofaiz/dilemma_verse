@@ -11,10 +11,10 @@ const { success, error } = require('../utils/response');
 
 // ── Cookie options ─────────────────────────────────────────────
 const COOKIE_OPTIONS = {
-  httpOnly: true,                              // Not accessible via JS
-  secure:   process.env.NODE_ENV === 'production', // HTTPS only in prod
-  sameSite: 'lax',                             // CSRF protection
-  maxAge:   7 * 24 * 60 * 60 * 1000,          // 7 days in ms
+  httpOnly: true,                              
+  secure:   process.env.NODE_ENV === 'production', 
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', 
+  maxAge:   7 * 24 * 60 * 60 * 1000,          
 };
 
 /**
@@ -58,7 +58,7 @@ exports.logout = (req, res) => {
   res.clearCookie('token', {
     httpOnly: true,
     secure:   process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
   });
   return success(res, null, 'Logged out successfully');
 };
