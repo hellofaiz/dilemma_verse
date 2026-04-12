@@ -5,11 +5,15 @@
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import * as XLSX from 'xlsx';
+import { tokenStorage } from '../context/AuthContext';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/situation';
 
-// Shared fetch options — always send cookies
-const FETCH_OPTS = { credentials: 'include' };
+// Returns auth headers with Bearer token from localStorage
+const getAuthHeaders = (extra = {}) => ({
+  ...extra,
+  ...(tokenStorage.get() ? { Authorization: `Bearer ${tokenStorage.get()}` } : {}),
+});
 
 const CATEGORIES  = ['Ethics', 'Game Theory', 'Moral Development', 'Metaphysics', 'Applied Ethics', 'Logic', 'Other'];
 const DIFFICULTIES = ['Easy', 'Medium', 'Hard'];
@@ -35,7 +39,7 @@ export function useDilemmas() {
   // ── Fetch all situations from DB ───────────────────────────────
   const fetchDilemmas = useCallback(async () => {
     try {
-      const res  = await fetch(API_URL, FETCH_OPTS);
+      const res  = await fetch(API_URL, { headers: getAuthHeaders() });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
       const mapped = json.data.map(d => ({
@@ -56,9 +60,8 @@ export function useDilemmas() {
   const addDilemma = useCallback(async (data) => {
     try {
       const res = await fetch(API_URL, {
-        ...FETCH_OPTS,
         method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
         body:    JSON.stringify({ ...data, title: data.situation, tags: [] }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -73,9 +76,8 @@ export function useDilemmas() {
   const updateDilemma = useCallback(async (id, data) => {
     try {
       const res = await fetch(`${API_URL}/${id}`, {
-        ...FETCH_OPTS,
         method:  'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
         body:    JSON.stringify({ ...data, title: data.situation, tags: [] }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -90,8 +92,8 @@ export function useDilemmas() {
   const deleteDilemma = useCallback(async (id) => {
     try {
       const res = await fetch(`${API_URL}/${id}`, {
-        ...FETCH_OPTS,
         method: 'DELETE',
+        headers: getAuthHeaders(),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       addToast('Dilemma deleted.', 'error');
@@ -121,9 +123,8 @@ export function useDilemmas() {
         }));
 
         const res = await fetch(`${API_URL}/bulk`, {
-          ...FETCH_OPTS,
           method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
           body:    JSON.stringify(imported),
         });
 
